@@ -1,8 +1,7 @@
 
-from time import sleep
 from cryptography.fernet import Fernet
 from json import loads, dumps
-
+import os
 
 def main():
     key = bytes(b'qG3o2lV-nlJyKdQhdwrA-luHI7dQVX-Hbj0ovMvyuek=')
@@ -11,19 +10,25 @@ def main():
     for f in options:
         print(f)
     user = input(':')
-    if user == 'add user':
-        add_user(data)
-        save(key,data)
-    if user == 'remove user':
-        remove_user(data)
-        save(key,data)
-    if user == 'login':
-        stuff = login(data)
-        if stuff[0] == True:    
-            data = user_choice(data,stuff[1])
+    try:
+        if user == 'add user':
+            add_user(data)
             save(key,data)
-        else:
-            print('Wrong username or password')
+        if user == 'remove user':
+            remove_user(data)
+            save(key,data)
+        if user == 'login':
+            stuff = login(data)
+            if stuff[0] == True:
+                os.system("cls")
+                data = user_choice(data,stuff[1])
+                save(key,data)
+            else:
+                print('Wrong username or password')
+    except KeyError:
+        print ("That does account does not exitst.")
+    finally:
+        save(key,data)
     
 
 def save(key,data):
@@ -43,12 +48,14 @@ def decrypt(key):
         return data
 
 def login(data):
+    os.system("cls")
     username = input('Username: ')
     password = input ('Password: ')
     if data[username]['login']['username'] == username and data[username]['login']['password'] == password:
         return True,username
 
 def add_account(data,other):
+    os.system("cls")
     name = input('What is the name of the account? ')
     username = input('What is your username? ')
     password = input('What is your password? ')
@@ -58,6 +65,7 @@ def add_account(data,other):
 {name}: username:{username}, password:{password}''')
 
 def remove_account(data,other):
+    os.system("cls")
     print(data)
     for f in data[other]['accounts']:
         print(f)
@@ -75,17 +83,21 @@ def user_choice(data,other):
             print('That is not one of the options.')
         if user == 'add account':
             add_account(data,other)
+            os.system("cls")
         elif user == 'remove account':
             remove_account(data,other)
+            os.system("cls")
         elif user == 'view account':
             view_account(data,other)
+            os.system("cls")
         elif user == 'change login':
             change_login(data,other)
+            os.system("cls")
         elif user == 'new file' and data[other] == data['admin']:
              data = new_file(data)
+             os.system("cls")
         elif user == 'exit':
             break
-        sleep(3)
         
 
     return data
@@ -103,17 +115,17 @@ def change_login(data,other):
         print('Username and password change canceled.')
 
 def view_account(data,other):
+    os.system("cls")
     for f in data[other]['accounts']:
         print(f)
     user = input('Select an account: ')
+    os.system("cls")
     stuff = data[other]['accounts'][user]
-    
-        
-
     print(f'''Account: {user}
 Username: {stuff[0]}
 Password: {stuff[1]}
     ''')
+    input("Press enter to continue. ")
 
 def new_file(data):
     data = {
@@ -133,6 +145,7 @@ def new_file(data):
     
 
 def add_user(data):
+    os.system("cls")
     username = input('Enter a username: ')
     password = input('Enter a password: ')
     other = {'login':{'username':username,'password':password},'accounts':{}}
@@ -140,13 +153,13 @@ def add_user(data):
     print('User has been added')
 
 def remove_user(data):
+    os.system("cls")
     for f in data:
         print(f)
     input('What user do you want to remove: ')
     stuff = login(data)
     if stuff[0] == True:
         del data[stuff[1]]
-
 
 
 if __name__ == '__main__':
